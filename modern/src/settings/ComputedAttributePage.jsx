@@ -14,6 +14,7 @@ import {
   Button,
   Snackbar,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditItemView from './components/EditItemView';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -22,12 +23,20 @@ import SettingsMenu from './components/SettingsMenu';
 import SelectField from '../common/components/SelectField';
 import { useCatch } from '../reactHelper';
 import { snackBarDurationLongMs } from '../common/util/duration';
-import useSettingsStyles from './common/useSettingsStyles';
 
 const allowedProperties = ['valid', 'latitude', 'longitude', 'altitude', 'speed', 'course', 'address', 'accuracy'];
 
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
+
 const ComputedAttributePage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const positionAttributes = usePositionAttributes(t);
@@ -147,7 +156,7 @@ const ComputedAttributePage = () => {
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
               <SelectField
-                value={deviceId}
+                value={deviceId || 0}
                 onChange={(e) => setDeviceId(Number(e.target.value))}
                 endpoint="/api/devices"
                 label={t('sharedDevice')}

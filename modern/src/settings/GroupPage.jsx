@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import {
   Accordion, AccordionSummary, AccordionDetails, Typography,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditItemView from './components/EditItemView';
 import EditAttributesAccordion from './components/EditAttributesAccordion';
@@ -15,10 +16,18 @@ import useCommonDeviceAttributes from '../common/attributes/useCommonDeviceAttri
 import useGroupAttributes from '../common/attributes/useGroupAttributes';
 import { useCatch } from '../reactHelper';
 import { groupsActions } from '../store';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const GroupPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
 
@@ -72,7 +81,7 @@ const GroupPage = () => {
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
               <SelectField
-                value={item.groupId}
+                value={item.groupId || 0}
                 onChange={(event) => setItem({ ...item, groupId: Number(event.target.value) })}
                 endpoint="/api/groups"
                 label={t('groupParent')}

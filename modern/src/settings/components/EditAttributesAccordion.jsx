@@ -15,6 +15,7 @@ import {
   Typography,
   AccordionDetails,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -25,10 +26,21 @@ import {
   distanceFromMeters, distanceToMeters, distanceUnitString, speedFromKnots, speedToKnots, speedUnitString, volumeFromLiters, volumeToLiters, volumeUnitString,
 } from '../../common/util/converter';
 import useFeatures from '../../common/util/useFeatures';
-import useSettingsStyles from '../common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  removeButton: {
+    marginRight: theme.spacing(1.5),
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const EditAttributesAccordion = ({ attribute, attributes, setAttributes, definitions, focusAttribute }) => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const features = useFeatures();

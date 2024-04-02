@@ -10,6 +10,7 @@ import {
   FormGroup,
   Button,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
 import EditItemView from './components/EditItemView';
@@ -17,10 +18,18 @@ import { prefixString, unprefixString } from '../common/util/stringUtils';
 import SelectField from '../common/components/SelectField';
 import SettingsMenu from './components/SettingsMenu';
 import { useCatch } from '../reactHelper';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const NotificationPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const [item, setItem] = useState();
@@ -65,6 +74,7 @@ const NotificationPage = () => {
             <AccordionDetails className={classes.details}>
               <SelectField
                 value={item.type}
+                emptyValue={null}
                 onChange={(e) => setItem({ ...item, type: e.target.value })}
                 endpoint="/api/notifications/types"
                 keyGetter={(it) => it.type}
@@ -92,7 +102,7 @@ const NotificationPage = () => {
               />
               {item.notificators?.includes('command') && (
                 <SelectField
-                  value={item.commandId}
+                  value={item.commandId || 0}
                   onChange={(event) => setItem({ ...item, commandId: Number(event.target.value) })}
                   endpoint="/api/commands"
                   titleGetter={(it) => it.description}
@@ -128,7 +138,7 @@ const NotificationPage = () => {
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
               <SelectField
-                value={item.calendarId}
+                value={item.calendarId || 0}
                 onChange={(event) => setItem({ ...item, calendarId: Number(event.target.value) })}
                 endpoint="/api/calendars"
                 label={t('sharedCalendar')}

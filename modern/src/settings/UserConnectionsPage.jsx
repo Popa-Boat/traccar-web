@@ -7,16 +7,28 @@ import {
   Typography,
   Container,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinkField from '../common/components/LinkField';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import SettingsMenu from './components/SettingsMenu';
 import { formatNotificationTitle } from '../common/util/formatter';
 import PageLayout from '../common/components/PageLayout';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    marginTop: theme.spacing(2),
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const UserConnectionsPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const { id } = useParams();
@@ -40,7 +52,6 @@ const UserConnectionsPage = () => {
               baseId={id}
               keyBase="userId"
               keyLink="deviceId"
-              titleGetter={(it) => `${it.name} (${it.uniqueId})`}
               label={t('deviceTitle')}
             />
             <LinkField
@@ -99,7 +110,6 @@ const UserConnectionsPage = () => {
               baseId={id}
               keyBase="userId"
               keyLink="driverId"
-              titleGetter={(it) => `${it.name} (${it.uniqueId})`}
               label={t('sharedDrivers')}
             />
             <LinkField

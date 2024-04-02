@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
+import React, { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -11,6 +10,7 @@ import {
   MenuItem,
   Select,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { prefixString } from '../common/util/stringUtils';
 import EditItemView from './components/EditItemView';
@@ -22,10 +22,18 @@ import {
 import { useTranslation } from '../common/components/LocalizationProvider';
 import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import SettingsMenu from './components/SettingsMenu';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const MaintenancePage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const positionAttributes = usePositionAttributes(t);
@@ -40,18 +48,21 @@ const MaintenancePage = () => {
     const otherList = [];
     Object.keys(attributes).forEach((key) => {
       const value = attributes[key];
-      if (value.type === 'number' || key.endsWith('Time')) {
+      if (value.type === 'number') {
         otherList.push({ key, name: value.name, type: value.type });
       }
     });
     return otherList;
   };
 
-  useEffect(() => {
-    const attribute = positionAttributes[item?.type];
-    if (item?.type?.endsWith('Time')) {
-      setLabels({ ...labels, start: null, period: t('sharedDays') });
-    } else if (attribute && attribute.dataType) {
+  const onMaintenanceTypeChange = (event) => {
+    const newValue = event.target.value;
+    setItem({
+      ...item, type: newValue, start: 0, period: 0,
+    });
+
+    const attribute = positionAttributes[newValue];
+    if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
         case 'distance':
           setLabels({ ...labels, start: t(prefixString('shared', distanceUnit)), period: t(prefixString('shared', distanceUnit)) });
@@ -66,16 +77,10 @@ const MaintenancePage = () => {
     } else {
       setLabels({ ...labels, start: null, period: null });
     }
-  }, [item?.type]);
+  };
 
-  const rawToValue = (start, value) => {
+  const rawToValue = (value) => {
     const attribute = positionAttributes[item.type];
-    if (item.type?.endsWith('Time')) {
-      if (start) {
-        return dayjs(value).locale('en').format('YYYY-MM-DD');
-      }
-      return value / 86400000;
-    }
     if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
         case 'speed':
@@ -89,14 +94,9 @@ const MaintenancePage = () => {
     return value;
   };
 
-  const valueToRaw = (start, value) => {
+  const valueToRaw = (value) => {
     const attribute = positionAttributes[item.type];
-    if (item.type?.endsWith('Time')) {
-      if (start) {
-        return dayjs(value, 'YYYY-MM-DD').valueOf();
-      }
-      return value * 86400000;
-    } if (attribute && attribute.dataType) {
+    if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
         case 'speed':
           return speedToKnots(value, speedUnit);
@@ -131,7 +131,7 @@ const MaintenancePage = () => {
             <AccordionDetails className={classes.details}>
               <TextField
                 value={item.name || ''}
-                onChange={(e) => setItem({ ...item, name: e.target.value })}
+                onChange={(event) => setItem({ ...item, name: event.target.value })}
                 label={t('sharedName')}
               />
               <FormControl>
@@ -139,7 +139,7 @@ const MaintenancePage = () => {
                 <Select
                   label={t('sharedType')}
                   value={item.type || ''}
-                  onChange={(e) => setItem({ ...item, type: e.target.value, start: 0, period: 0 })}
+                  onChange={onMaintenanceTypeChange}
                 >
                   {convertToList(positionAttributes).map(({ key, name }) => (
                     <MenuItem key={key} value={key}>{name}</MenuItem>
@@ -147,15 +147,15 @@ const MaintenancePage = () => {
                 </Select>
               </FormControl>
               <TextField
-                type={item.type?.endsWith('Time') ? 'date' : 'number'}
-                value={rawToValue(true, item.start) || ''}
-                onChange={(e) => setItem({ ...item, start: valueToRaw(true, e.target.value) })}
+                type="number"
+                value={rawToValue(item.start) || ''}
+                onChange={(event) => setItem({ ...item, start: valueToRaw(event.target.value) })}
                 label={labels.start ? `${t('maintenanceStart')} (${labels.start})` : t('maintenanceStart')}
               />
               <TextField
                 type="number"
-                value={rawToValue(false, item.period) || ''}
-                onChange={(e) => setItem({ ...item, period: valueToRaw(false, e.target.value) })}
+                value={rawToValue(item.period) || ''}
+                onChange={(event) => setItem({ ...item, period: valueToRaw(event.target.value) })}
                 label={labels.period ? `${t('maintenancePeriod')} (${labels.period})` : t('maintenancePeriod')}
               />
             </AccordionDetails>

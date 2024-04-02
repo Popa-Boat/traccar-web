@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Table, TableRow, TableCell, TableHead, TableBody, Switch, TableFooter, FormControlLabel,
+  Table, TableRow, TableCell, TableHead, TableBody,
 } from '@mui/material';
 import LoginIcon from '@mui/icons-material/Login';
 import LinkIcon from '@mui/icons-material/Link';
@@ -31,7 +31,6 @@ const UsersPage = () => {
   const [items, setItems] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [temporary, setTemporary] = useState(false);
 
   const handleLogin = useCatch(async (userId) => {
     const response = await fetch(`/api/session/${userId}`);
@@ -85,7 +84,7 @@ const UsersPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {!loading ? items.filter((u) => temporary || !u.temporary).filter(filterByKeyword(searchKeyword)).map((item) => (
+          {!loading ? items.filter(filterByKeyword(searchKeyword)).map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>
               <TableCell>{item.email}</TableCell>
@@ -104,23 +103,6 @@ const UsersPage = () => {
             </TableRow>
           )) : (<TableShimmer columns={6} endAction />)}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={6} align="right">
-              <FormControlLabel
-                control={(
-                  <Switch
-                    value={temporary}
-                    onChange={(e) => setTemporary(e.target.checked)}
-                    size="small"
-                  />
-                )}
-                label={t('userTemporary')}
-                labelPlacement="start"
-              />
-            </TableCell>
-          </TableRow>
-        </TableFooter>
       </Table>
       <CollectionFab editPath="/settings/user" />
     </PageLayout>

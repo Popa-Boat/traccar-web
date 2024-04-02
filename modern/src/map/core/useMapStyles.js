@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import { useAttributePreference } from '../../common/util/preferences';
@@ -38,7 +37,7 @@ export default () => {
   const mapboxAccessToken = useAttributePreference('mapboxAccessToken');
   const customMapUrl = useSelector((state) => state.session.server.mapUrl);
 
-  return useMemo(() => [
+  return [
     {
       id: 'locationIqStreets',
       title: t('mapLocationIqStreets'),
@@ -255,5 +254,5 @@ export default () => {
       }),
       available: !!customMapUrl,
     },
-  ], [t, mapTilerKey, locationIqKey, bingMapsKey, tomTomKey, hereKey, mapboxAccessToken, customMapUrl]);
+  ];
 };

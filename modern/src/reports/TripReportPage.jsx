@@ -6,7 +6,7 @@ import {
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import {
-  formatDistance, formatSpeed, formatVolume, formatTime, formatNumericHours,
+  formatDistance, formatSpeed, formatHours, formatVolume, formatTime,
 } from '../common/util/formatter';
 import ReportFilter from './components/ReportFilter';
 import { useAttributePreference, usePreference } from '../common/util/preferences';
@@ -142,7 +142,7 @@ const TripReportPage = () => {
       case 'maxSpeed':
         return formatSpeed(item[key], speedUnit, t);
       case 'duration':
-        return formatNumericHours(item[key], t);
+        return formatHours(item[key]);
       case 'spentFuel':
         return formatVolume(item[key], volumeUnit, t);
       case 'startAddress':

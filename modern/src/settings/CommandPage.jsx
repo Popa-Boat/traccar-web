@@ -2,15 +2,24 @@ import React, { useState } from 'react';
 import {
   Accordion, AccordionSummary, AccordionDetails, Typography, TextField,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditItemView from './components/EditItemView';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import BaseCommandView from './components/BaseCommandView';
 import SettingsMenu from './components/SettingsMenu';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const CommandPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const [item, setItem] = useState();

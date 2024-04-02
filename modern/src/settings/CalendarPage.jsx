@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import {
   Accordion, AccordionSummary, AccordionDetails, Typography, FormControl, InputLabel, Select, MenuItem,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DropzoneArea } from 'react-mui-dropzone';
 import EditItemView from './components/EditItemView';
@@ -14,7 +15,6 @@ import SettingsMenu from './components/SettingsMenu';
 import { prefixString } from '../common/util/stringUtils';
 import { calendarsActions } from '../store';
 import { useCatch } from '../reactHelper';
-import useSettingsStyles from './common/useSettingsStyles';
 
 const formatCalendarTime = (time) => {
   const tzid = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -61,8 +61,17 @@ const simpleCalendar = () => window.btoa([
   'END:VCALENDAR',
 ].join('\n'));
 
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
+
 const CalendarPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
 

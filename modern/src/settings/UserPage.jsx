@@ -18,6 +18,7 @@ import {
   IconButton,
   OutlinedInput,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import CachedIcon from '@mui/icons-material/Cached';
@@ -37,10 +38,18 @@ import useQuery from '../common/util/useQuery';
 import { useCatch } from '../reactHelper';
 import useMapStyles from '../map/core/useMapStyles';
 import { map } from '../map/core/MapView';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const UserPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
@@ -83,7 +92,7 @@ const UserPage = () => {
   const handleGenerateTotp = useCatch(async () => {
     const response = await fetch('/api/users/totp', { method: 'POST' });
     if (response.ok) {
-      setItem({ ...item, totpKey: await response.text() });
+      setItem({ ...item, totpKey: await response.text() })
     } else {
       throw Error(await response.text());
     }
@@ -258,7 +267,8 @@ const UserPage = () => {
                 </Select>
               </FormControl>
               <SelectField
-                value={item.attributes && item.attributes.timezone}
+                value={(item.attributes && item.attributes.timezone) || ''}
+                emptyValue=""
                 onChange={(e) => setItem({ ...item, attributes: { ...item.attributes, timezone: e.target.value } })}
                 endpoint="/api/server/timezones"
                 keyGetter={(it) => it}

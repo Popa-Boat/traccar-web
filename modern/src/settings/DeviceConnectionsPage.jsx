@@ -7,6 +7,7 @@ import {
   Typography,
   Container,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinkField from '../common/components/LinkField';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -14,10 +15,21 @@ import SettingsMenu from './components/SettingsMenu';
 import { formatNotificationTitle } from '../common/util/formatter';
 import PageLayout from '../common/components/PageLayout';
 import useFeatures from '../common/util/useFeatures';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    marginTop: theme.spacing(2),
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const DeviceConnectionsPage = () => {
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const { id } = useParams();
@@ -61,7 +73,6 @@ const DeviceConnectionsPage = () => {
                 baseId={id}
                 keyBase="deviceId"
                 keyLink="driverId"
-                titleGetter={(it) => `${it.name} (${it.uniqueId})`}
                 label={t('sharedDrivers')}
               />
             )}
@@ -76,17 +87,15 @@ const DeviceConnectionsPage = () => {
                 label={t('sharedComputedAttributes')}
               />
             )}
-            {!features.disableSavedCommands && (
-              <LinkField
-                endpointAll="/api/commands"
-                endpointLinked={`/api/commands?deviceId=${id}`}
-                baseId={id}
-                keyBase="deviceId"
-                keyLink="commandId"
-                titleGetter={(it) => it.description}
-                label={t('sharedSavedCommands')}
-              />
-            )}
+            <LinkField
+              endpointAll="/api/commands"
+              endpointLinked={`/api/commands?deviceId=${id}`}
+              baseId={id}
+              keyBase="deviceId"
+              keyLink="commandId"
+              titleGetter={(it) => it.description}
+              label={t('sharedSavedCommands')}
+            />
             {!features.disableMaintenance && (
               <LinkField
                 endpointAll="/api/maintenance"

@@ -10,6 +10,7 @@ import {
   TextField,
   Button,
 } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
@@ -17,11 +18,31 @@ import SettingsMenu from './components/SettingsMenu';
 import { useCatch } from '../reactHelper';
 import { useAttributePreference } from '../common/util/preferences';
 import { distanceFromMeters, distanceToMeters, distanceUnitString } from '../common/util/converter';
-import useSettingsStyles from './common/useSettingsStyles';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    marginTop: theme.spacing(2),
+  },
+  buttons: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    '& > *': {
+      flexBasis: '33%',
+    },
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
+  },
+}));
 
 const AccumulatorsPage = () => {
   const navigate = useNavigate();
-  const classes = useSettingsStyles();
+  const classes = useStyles();
   const t = useTranslation();
 
   const distanceUnit = useAttributePreference('distanceUnit');
